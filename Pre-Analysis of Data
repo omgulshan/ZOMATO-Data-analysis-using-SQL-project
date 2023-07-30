@@ -3,6 +3,12 @@ Question:
 Zomato Case Study-
 
 1. Find customers who have never ordered
+Intiution:
+Since we have the details of all the users of the Zomato app and also have all the information regarding the order so we
+can firstly use the sql query to find the details of the users who have orderd atleast once and then 
+after comparing their user id we can get the details of the users who have never ordered.
+*SQL Queries:*
+select name from user_details where user_id NOT IN(select user_id from orders);
 2. Average Price/dish
 3. Find the top restaurant in terms of the number of orders for a given month
 4. restaurants with monthly sales greater than x for 
@@ -10,3 +16,5 @@ Zomato Case Study-
 6. Find restaurants with max repeated customers 
 7. Month over month revenue growth of swiggy
 8. Customer - favorite food
+
+
