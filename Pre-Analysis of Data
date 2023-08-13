@@ -8,14 +8,65 @@ Since we have the details of all the users of the Zomato app and also have all t
 can firstly use the sql query to find the details of the users who have orderd atleast once and then 
 after comparing their user id we can get the details of the users who have never ordered.
 *SQL Queries:*
-select name from user_details where user_id NOT IN(select user_id from orders);
+SELECT name
+FROM users_details
+WHERE user_id NOT IN (SELECT DISTINCT user_id FROM orders);
+
 2. Average Price/dish
 
+SELECT f_name, AVG(price) AS avg_price_per_dish
+FROM food_choice
+JOIN menu_details ON food_choice.f_id = menu_details.f_id
+GROUP BY f_name;
+
 3. Find the top restaurant in terms of the number of orders for a given month
+SELECT r_name, COUNT(*) AS num_orders
+FROM resturant_details
+JOIN orders ON resturant_details.r_id = orders.r_id
+WHERE MONTH(date) = [your_month]
+GROUP BY r_name
+ORDER BY num_orders DESC
+LIMIT 1;
+
 4. restaurants with monthly sales greater than x for 
+SELECT r_name, SUM(amount) AS monthly_sales
+FROM resturant_details
+JOIN orders ON resturant_details.r_id = orders.r_id
+WHERE MONTH(date) = [your_month]
+GROUP BY r_name
+HAVING monthly_sales > [your_amount];
+
 5. Show all orders with order details for a particular customer in a particular date range
+SELECT order_id, date, r_name, f_name, amount
+FROM orders
+JOIN users_details ON orders.user_id = users_details.user_id
+JOIN resturant_details ON orders.r_id = resturant_details.r_id
+JOIN order_details ON orders.order_id = order_details.order_id
+JOIN food_choice ON order_details.f_id = food_choice.f_id
+WHERE users_details.user_id = [your_user_id]
+AND date BETWEEN '[start_date]' AND '[end_date]';
+
 6. Find restaurants with max repeated customers 
+SELECT r_name, COUNT(DISTINCT user_id) AS num_repeated_customers
+FROM resturant_details
+JOIN orders ON resturant_details.r_id = orders.r_id
+GROUP BY r_name
+ORDER BY num_repeated_customers DESC
+LIMIT 1;
+
 7. Month over month revenue growth of swiggy
+SELECT MONTH(date) AS month, SUM(amount) AS revenue
+FROM orders
+GROUP BY MONTH(date)
+ORDER BY month;
+
 8. Customer - favorite food
+SELECT name, f_name, COUNT(*) AS num_orders
+FROM users_details
+JOIN orders ON users_details.user_id = orders.user_id
+JOIN order_details ON orders.order_id = order_details.order_id
+JOIN food_choice ON order_details.f_id = food_choice.f_id
+GROUP BY name, f_name
+ORDER BY num_orders DESC;
 
 
